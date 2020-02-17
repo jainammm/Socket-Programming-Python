@@ -4,21 +4,18 @@ import threading
 
 usernamePasswordDict = {}
 
-with open('login_credentials.csv', 'r') as file_data:
+with open('login_credentials_A.csv', 'r') as file_data:
     reader = csv.DictReader(file_data, ("Username", "Password"))
     for i in reader:
         usernamePasswordDict[i["Username"]] = i["Password"]
 
-def checkPassword(username, password):
+def getPassword(username):
     try:
-        uPass = usernamePasswordDict[username]
+        password = usernamePasswordDict[username]
     except:
-        uPass = "NA"
+        password = "NA"
 
-    if uPass == password: 
-        return "ACK: User has logged in!"
-    
-    return "ACK: Please enter correct password or username!"
+    return password
 
 def clientThread(clientsocket, address):
     # Message of successfull connection!
@@ -27,16 +24,9 @@ def clientThread(clientsocket, address):
     username = clientsocket.recv(1024).decode()
     
     # Send acknowledgement of received username.
-    ack = "ACK: Username Received"
-    clientsocket.send(ack.encode())
+    password = getPassword(username)
+    clientsocket.send(password.encode())
 
-    password = clientsocket.recv(1024).decode()
-
-    # Check password and send acknowledgement
-    ack = checkPassword(username, password)
-    clientsocket.send(ack.encode())
-
-    # Close socket and listen to other sockets
     clientsocket.close()
     print(f"Connection from {address} has been closed.")
     print("=========================================")  

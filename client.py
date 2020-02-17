@@ -6,7 +6,7 @@ def main():
 
     clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
-        print(clientSocket.connect((hostname, port)))
+        clientSocket.connect((hostname, port))
     except ConnectionRefusedError:
         print("Please specify correct hostname and port number!")
         return
