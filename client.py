@@ -1,7 +1,7 @@
 import socket
 
 def main():
-    hostname = input("Enter Hostname: ")
+    hostname = socket.gethostname()
     port = int(input("Enter Port number: "))
 
     clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

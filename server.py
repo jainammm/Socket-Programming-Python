@@ -1,5 +1,6 @@
 import socket
 import csv
+import threading
 
 usernamePasswordDict = {}
 
@@ -19,6 +20,27 @@ def checkPassword(username, password):
     
     return "ACK: Please enter correct password or username!"
 
+def clientThread(clientsocket, address):
+    # Message of successfull connection!
+    print(f"Connection from {address} has been established.")
+    
+    username = clientsocket.recv(1024).decode()
+    
+    # Send acknowledgement of received username.
+    ack = "ACK: Username Received"
+    clientsocket.send(ack.encode())
+
+    password = clientsocket.recv(1024).decode()
+
+    # Check password and send acknowledgement
+    ack = checkPassword(username, password)
+    clientsocket.send(ack.encode())
+
+    # Close socket and listen to other sockets
+    clientsocket.close()
+    print(f"Connection from {address} has been closed.")
+    print("=========================================")  
+
 def main():
     hostname = socket.gethostname()
     port = int(input("Enter Port number: "))
@@ -30,27 +52,14 @@ def main():
     print(f"The server has started running with host {hostname} and port {port}")
     print("=========================================")
 
-    while True:
-        clientsocket, address = serverSocket.accept()
+    try:
+        while True:
+            clientsocket, address = serverSocket.accept()
 
-        # Message of successfull connection!
-        print(f"Connection from {address} has been established.")
-        
-        username = clientsocket.recv(1024).decode()
-        
-        # Send acknowledgement of received username.
-        ack = "ACK: Username Received"
-        clientsocket.send(ack.encode())
-
-        password = clientsocket.recv(1024).decode()
-
-        # Check password and send acknowledgement
-        ack = checkPassword(username, password)
-        clientsocket.send(ack.encode())
-        
-        # Close socket and listen to other sockets
-        clientsocket.close()
-        
+            newThread = threading.Thread(target=clientThread, args=(clientsocket, address, )) 
+            newThread.start()
+    except KeyboardInterrupt:
+        serverSocket.close()
 
 
 
