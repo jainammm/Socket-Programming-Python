@@ -42,14 +42,15 @@ def clientThread(clientsocket, address):
     print("=========================================")  
 
 def main():
-    hostname = socket.gethostname()
+    hostname = "0.0.0.0"
     port = int(input("Enter Port number: "))
 
     serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serverSocket.bind((hostname, port))
     serverSocket.listen(5)
 
-    print(f"The server has started running with host {hostname} and port {port}")
+    ipAddr = socket.gethostbyname(hostname)
+    print(f"The server has started running with host {ipAddr} and port {port}")
     print("=========================================")
 
     try:
