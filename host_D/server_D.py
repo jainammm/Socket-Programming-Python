@@ -7,6 +7,7 @@ def clientThread(clientsocket, address):
     print(f"Connection from {address} has been established.")
     
     username = clientsocket.recv(1024).decode()
+    print(f"Received username from {address}.")
 
     fileData = open('attendance.csv', mode='r')
     reader = csv.reader(fileData)
@@ -25,10 +26,11 @@ def clientThread(clientsocket, address):
         clientsocket.send( (str((attendance*100) / 8)).encode() )
     else:
         clientsocket.send( (str(0)).encode() )
+    
+    print(f"Attendance percentage sent to {address}.")
 
     clientsocket.close()
     print(f"Connection from {address} has been closed.")
-    print("=========================================")  
 
 def main():
     hostname = "0.0.0.0"

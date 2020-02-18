@@ -19,6 +19,11 @@ def main():
     username = input("Please enter the username: ")
     clientSocket.send(username.encode())
 
+    if username == "EXIT":
+        clientSocket.close()
+        print("Program EXITED!")
+        return
+
     # Print ack received by the server
     ack = clientSocket.recv(1024).decode()
     print("=========================================")
@@ -28,6 +33,11 @@ def main():
     print("=========================================")
     password = input("Please enter the password: ")
     clientSocket.send(password.encode())
+    
+    if password == "EXIT":
+        clientSocket.close()
+        print("Program EXITED!")
+        return
 
     ack = clientSocket.recv(1024).decode()
     print("=========================================")

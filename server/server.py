@@ -17,12 +17,22 @@ def clientThread(clientsocket, address):
     print(f"Connection from {address} has been established.")
     
     username = clientsocket.recv(1024).decode()
+    if username == "EXIT":
+        clientsocket.close()
+        print(f"Connection from {address} has been closed.")
+        print("=========================================") 
+        return
     
     # Send acknowledgement of received username.
     ack = "ACK: Username Received"
     clientsocket.send(ack.encode())
 
     password = clientsocket.recv(1024).decode()
+    if password == "EXIT":
+        clientsocket.close()
+        print(f"Connection from {address} has been closed.")
+        print("=========================================") 
+        return
 
     hostSocket1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -33,13 +43,16 @@ def clientThread(clientsocket, address):
     else:
         config = getConfig("routing_table/C.rtl")
 
-    print(f"Checking from  password {config}!")
+    print(f"Checking of  password from Host {config}!")
 
     hostSocket1.connect((config[1], int(config[2])))
+    print(f"Connected to {config}.")
 
     hostSocket1.send(username.encode())
+    print(f"Sending username - {username} to host {config}.")
 
     uPass = hostSocket1.recv(1024).decode()
+    print(f"Received ack from {config}.")
 
     hostSocket1.close()
 
@@ -48,11 +61,13 @@ def clientThread(clientsocket, address):
     configD = getConfig("routing_table/D.rtl")
     hostSocket2.connect((configD[1], int(configD[2])) )
 
-    print(f"Checking from  attendance {config}!")
-
+    print(f"Connected to {configD}.")
+    
     hostSocket2.send(username.encode())
+    print(f"Sending username - {username} to host {configD}.")
 
     attendancePercentage = float(hostSocket2.recv(1024).decode())
+    print(f"Received ack from {configD}.")
 
     hostSocket2.close()
 

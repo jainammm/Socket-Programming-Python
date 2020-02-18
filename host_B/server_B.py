@@ -22,14 +22,15 @@ def clientThread(clientsocket, address):
     print(f"Connection from {address} has been established.")
     
     username = clientsocket.recv(1024).decode()
-    
+    print(f"Received username from {address}.")
+
     # Send acknowledgement of received username.
     password = getPassword(username)
     clientsocket.send(password.encode())
+    print(f"Password sent to {address}.")
 
     clientsocket.close()
     print(f"Connection from {address} has been closed.")
-    print("=========================================")  
 
 def main():
     hostname = "0.0.0.0"
